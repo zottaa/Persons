@@ -1,10 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.company.persons.Controller">
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.company.persons.Controller">
     <children>
-        <Label fx:id="output" layoutX="100.0" layoutY="93.0" />
+      <BorderPane fx:id="menuPane" layoutX="600.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="203.0" style="-fx-background-color: #fff;">
+         <effect>
+            <DropShadow />
+         </effect>
+         <top>
+              <Label fx:id="timeOutput" prefHeight="43.0" prefWidth="200.0" textAlignment="JUSTIFY" translateY="30.0" BorderPane.alignment="CENTER" />
+         </top>
+         <bottom>
+            <ButtonBar buttonMinWidth="50.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <buttons>
+                  <Button fx:id="startButton" mnemonicParsing="false" onAction="#startClick" text="Start" translateX="-45.0" />
+                  <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopClick" text="Stop" translateX="-45.0" />
+               </buttons>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </ButtonBar>
+         </bottom>
+         <right>
+            <VBox prefHeight="717.0" prefWidth="101.5" BorderPane.alignment="CENTER">
+               <children>
+                  <Label prefHeight="17.0" prefWidth="117.0" text="Time to spawn JP" translateX="1.0" translateY="180.0" />
+                  <TextField fx:id="rightTextField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#submit" prefHeight="25.0" prefWidth="80.0" translateX="10.0" translateY="180.0" />
+                  <Label prefHeight="17.0" prefWidth="300.0" text="Probability for JP" textAlignment="CENTER" translateX="1.0" translateY="200.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="comboBoxRight" onAction="#selectComboBoxRight" prefWidth="80.0" translateX="10.0" translateY="200.0" />
+                  <CheckBox fx:id="showInfo" mnemonicParsing="false" prefHeight="47.0" prefWidth="100.0" text="Show info" translateX="10.0" translateY="570.0" />
+               </children>
+            </VBox>
+         </right>
+         <left>
+            <VBox prefHeight="200.0" prefWidth="101.5" BorderPane.alignment="CENTER">
+               <children>
+                  <Label prefHeight="17.0" prefWidth="118.0" text="Time to spawn IP" translateX="1.0" translateY="180.0" />
+                  <TextField fx:id="leftTextField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#submit" prefWidth="80.0" translateX="10.0" translateY="180.0" />
+                  <Label prefHeight="17.0" prefWidth="110.0" text="Probability for IP" textAlignment="CENTER" translateX="1.0" translateY="200.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="comboBoxLeft" onAction="#selectComboBoxLeft" prefWidth="80.0" translateX="10.0" translateY="200.0" />
+                  <RadioButton fx:id="showTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" text="Show time" translateX="10.0" translateY="550.0">
+                     <padding>
+                        <Insets top="20.0" />
+                     </padding>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="time" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="hideTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" selected="true" text="Hide time" toggleGroup="$time" translateX="10.0" translateY="550.0">
+                     <padding>
+                        <Insets top="20.0" />
+                     </padding>
+                  </RadioButton>
+               </children>
+            </VBox>
+         </left>
+      </BorderPane>
+      <Label fx:id="simulationStatistics" layoutX="163.0" layoutY="198.0" />
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="800.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Main">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#startClick" text="Start" />
+                  <MenuItem mnemonicParsing="false" onAction="#stopClick" text="Stop" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <RadioMenuItem fx:id="menuShowTimeButton" mnemonicParsing="false" onAction="#menuTimeRadioButtonToggle" text="Show time">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="time_2" />
+                     </toggleGroup>
+                  </RadioMenuItem>
+                  <RadioMenuItem fx:id="menuHideTimeButton" mnemonicParsing="false" onAction="#menuTimeRadioButtonToggle" selected="true" text="Hide time" toggleGroup="$time_2" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Toolbar">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
     </children>
 </AnchorPane>
