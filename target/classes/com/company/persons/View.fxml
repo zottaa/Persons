@@ -51,7 +51,7 @@
                      </font>
                   </Label>
                   <ComboBox fx:id="comboBoxRight" onAction="#selectComboBoxRight" prefWidth="80.0" translateX="10.0" translateY="200.0" />
-                  <CheckBox fx:id="showInfo" mnemonicParsing="false" prefHeight="47.0" prefWidth="100.0" text="Show info" translateX="10.0" translateY="570.0" />
+                  <CheckBox fx:id="showInfo" mnemonicParsing="false" onAction="#showInfoSwitch" prefHeight="47.0" prefWidth="100.0" text="Show info" translateX="10.0" translateY="570.0" />
                </children>
             </VBox>
          </right>
@@ -90,18 +90,18 @@
             <items>
               <MenuItem mnemonicParsing="false" onAction="#startClick" text="Start" />
                   <MenuItem mnemonicParsing="false" onAction="#stopClick" text="Stop" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Toolbar">
+            <items>
                   <RadioMenuItem fx:id="menuShowTimeButton" mnemonicParsing="false" onAction="#menuTimeRadioButtonToggle" text="Show time">
                      <toggleGroup>
                         <ToggleGroup fx:id="time_2" />
                      </toggleGroup>
                   </RadioMenuItem>
                   <RadioMenuItem fx:id="menuHideTimeButton" mnemonicParsing="false" onAction="#menuTimeRadioButtonToggle" selected="true" text="Hide time" toggleGroup="$time_2" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Toolbar">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <RadioMenuItem fx:id="menuShowTime" mnemonicParsing="false" onAction="#showInfoMenuSwitch" text="Show info" />
             </items>
           </Menu>
         </menus>

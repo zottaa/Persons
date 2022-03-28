@@ -1,6 +1,5 @@
 package com.company.persons
 
-import com.company.persons.Habitat.Companion.instance
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.fxml.FXMLLoader
@@ -17,15 +16,16 @@ import kotlin.random.Random
 class Habitat : Application() {
     private var listOfPersons : MutableList<Person> = mutableListOf()
     private var timer : Timer = Timer()
+    private var simulationTime: Long = 0
     private var simulationStartTime: Long = 0
     private lateinit var pane : Pane
     private lateinit var scene : Scene
-    private lateinit var controller : Controller
+    lateinit var controller : Controller
     var timeToSpawnIP : Int = 1
     var timeToSpawnJP : Int = 1
     var chanceOfSpawnIP : Int = 50
     var chanceOfSpawnJP : Int = 50
-
+    lateinit var window: Stage
     companion object {
         lateinit var instance: Habitat
     }
@@ -58,6 +58,10 @@ class Habitat : Application() {
                         controller.hideTime()
                 }
 
+                KeyCode.K -> {
+                    controller.createModal(Habitat.instance.time(), listOfPersons)
+                }
+
                 else -> println("Unknown button")
             }
         }
@@ -67,6 +71,7 @@ class Habitat : Application() {
             icons.add(Image("icon.png"))
             show()
         }
+        window = stage
         controller.addComboBoxes()
         controller.addTextFields()
     }
@@ -78,24 +83,41 @@ class Habitat : Application() {
             0.toLong()
     }
 
-    fun addCombo(){
-
+    fun resumeSimulation(){
+        startSimulation(simulationTime)
     }
 
     fun stopSimulation(){
-        controller.showInformation(System.currentTimeMillis() - simulationStartTime, listOfPersons)
-        clearHabitat()
-        timer.cancel()
-        timer = Timer()
-        listOfPersons.clear()
-        simulationStartTime = 0
+        simulationTime = System.currentTimeMillis() - simulationStartTime
+        if (controller.timeFlag) controller.showTime()
+        if (controller.showInfo.isSelected) {
+            timer.cancel()
+            controller.createModal(Habitat.instance.time(), listOfPersons)
+        } else {
+            endSimulation()
+        }
     }
 
-    fun startSimulation(){
+    fun endSimulation(){
+        controller.stopButton.isDisable = true
+        controller.startButton.isDisable = false
+        if (simulationStartTime.toInt() != 0) {
+                controller.showInformation(simulationTime, listOfPersons)
+            clearHabitat()
+            timer.cancel()
+            timer = Timer()
+            listOfPersons.clear()
+            simulationStartTime = 0
+        }
+    }
+
+    fun startSimulation(previousSimulationTime: Long = 0){
+        timer = Timer()
         controller.submit()
         controller.hideStatistics()
-        clearHabitat()
-        simulationStartTime = System.currentTimeMillis()
+        if (previousSimulationTime.toInt() == 0)
+            clearHabitat()
+        simulationStartTime = System.currentTimeMillis() - previousSimulationTime
         val task: TimerTask = object : TimerTask() {
             override fun run() {
                 Platform.runLater { update(System.currentTimeMillis() - simulationStartTime) }
@@ -106,7 +128,7 @@ class Habitat : Application() {
 
     private fun update(currentTime: Long){
         if (((currentTime / 1000) % timeToSpawnIP).toInt() == 0){
-            if (Random.nextInt(0, 100) < chanceOfSpawnIP){
+            if (Random.nextInt(0, 99) < chanceOfSpawnIP){
                 createIP()
             }
         }
@@ -133,7 +155,6 @@ class Habitat : Application() {
 
         pane.children.add(individualPerson.getImageView())
         listOfPersons.add(individualPerson)
-        println(chanceOfSpawnIP)
     }
 
     private fun createJP(){
@@ -143,11 +164,9 @@ class Habitat : Application() {
         val juridicalPerson = JuridicalPerson(x, y)
         pane.children.add(juridicalPerson.getImageView())
         listOfPersons.add(juridicalPerson)
-        println(chanceOfSpawnJP)
     }
 }
 
 fun main(args: Array<String>){
     Application.launch(Habitat::class.java, *args)
-    instance = Habitat.instance
 }
