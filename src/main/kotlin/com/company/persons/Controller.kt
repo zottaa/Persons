@@ -7,7 +7,6 @@ import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.text.Font
 import java.lang.NumberFormatException
-import kotlin.system.exitProcess
 
 
 class Controller {
@@ -17,7 +16,7 @@ class Controller {
     var comboBoxFlag = false
 
     @FXML
-    private lateinit var showInfo: CheckBox
+    lateinit var showInfo: CheckBox
 
     @FXML
     private lateinit var mainPane: AnchorPane
@@ -32,10 +31,10 @@ class Controller {
     private lateinit var timeOutput: Label
 
     @FXML
-    private lateinit var startButton: Button
+    lateinit var startButton: Button
 
     @FXML
-    private lateinit var stopButton: Button
+    lateinit var stopButton: Button
 
     @FXML
     private lateinit var showTimeButton: RadioButton
@@ -61,9 +60,15 @@ class Controller {
     @FXML
     private lateinit var rightTextField: TextField
 
+    @FXML
+    private lateinit var menuShowTime: RadioMenuItem
 
-    fun showInformationCheckBox(){
+    fun showInfoMenuSwitch (){
+        showInfo.isSelected = showInfo.isSelected.not()
+    }
 
+    fun showInfoSwitch (){
+        menuShowTime.isSelected = menuShowTime.isSelected.not()
     }
 
     fun addTextFields(){
@@ -71,7 +76,7 @@ class Controller {
         rightTextField.text = Habitat.instance.timeToSpawnJP.toString()
     }
 
-    fun createAlert(str: String){
+    private fun createAlert(str: String){
         val alert = Alert(Alert.AlertType.ERROR)
         alert.contentText = str
         alert.showAndWait()
@@ -153,8 +158,6 @@ class Controller {
 
     fun stopClick(){
         Habitat.instance.stopSimulation()
-        stopButton.isDisable = true
-        startButton.isDisable = false
     }
 
     fun menuTimeRadioButtonToggle(){
@@ -200,7 +203,7 @@ class Controller {
         }
     }
 
-    fun showInformation(time: Long, listOfPersons: MutableList<Person>){
+    fun getInformationString(time: Long, listOfPersons: MutableList<Person>): String {
         var totalOfIndividualPersons = 0
         var totalOfJuridicalPersons = 0
         listOfPersons.forEach {
@@ -208,14 +211,21 @@ class Controller {
             else totalOfJuridicalPersons++
         }
 
-        val str = "Time of simulation: ${time/1000}\nNumber of spawned persons: ${listOfPersons.size}\nNumber of spawned " +
+        return "Time of simulation: ${time / 1000}\nNumber of spawned persons: ${listOfPersons.size}\nNumber of spawned " +
                 "individual persons $totalOfIndividualPersons\nNumber of spawned juridical persons $totalOfJuridicalPersons"
+    }
 
+    fun showInformation(time: Long, listOfPersons: MutableList<Person>){
         simulationStatistics.apply {
             layoutX = mainPane.width / 2 - 300
             layoutY = mainPane.height / 2 - 50
             font = Font("Arial", 20.0)
-            text = str
+            text = getInformationString(time, listOfPersons)
         }
+    }
+
+    fun createModal(time: Long, listOfPersons: MutableList<Person>){
+        if (showInfo.isSelected)
+            ModalWindow.createWindow(time, listOfPersons)
     }
 }
