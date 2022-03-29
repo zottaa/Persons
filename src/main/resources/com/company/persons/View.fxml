@@ -43,30 +43,34 @@
          <right>
             <VBox prefHeight="717.0" prefWidth="101.5" BorderPane.alignment="CENTER">
                <children>
+                  <Label prefHeight="17.0" prefWidth="150.0" text="    Time of live JP" translateY="160.0" />
+                  <TextField fx:id="rightTextFieldLive" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#submit" prefHeight="25.0" prefWidth="80.0" translateX="10.0" translateY="160.0" />
                   <Label prefHeight="17.0" prefWidth="117.0" text="Time to spawn JP" translateX="1.0" translateY="180.0" />
-                  <TextField fx:id="rightTextField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#submit" prefHeight="25.0" prefWidth="80.0" translateX="10.0" translateY="180.0" />
+                  <TextField fx:id="rightTextFieldSpawn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#submit" prefHeight="25.0" prefWidth="80.0" translateX="10.0" translateY="180.0" />
                   <Label prefHeight="17.0" prefWidth="300.0" text="Probability for JP" textAlignment="CENTER" translateX="1.0" translateY="200.0">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
                   <ComboBox fx:id="comboBoxRight" onAction="#selectComboBoxRight" prefWidth="80.0" translateX="10.0" translateY="200.0" />
-                  <CheckBox fx:id="showInfo" mnemonicParsing="false" onAction="#showInfoSwitch" prefHeight="47.0" prefWidth="100.0" text="Show info" translateX="10.0" translateY="570.0" />
+                  <CheckBox fx:id="showInfo" mnemonicParsing="false" onAction="#showInfoSwitch" prefHeight="47.0" prefWidth="100.0" text="Show info" translateX="10.0" translateY="525.0" />
                </children>
             </VBox>
          </right>
          <left>
             <VBox prefHeight="200.0" prefWidth="101.5" BorderPane.alignment="CENTER">
                <children>
-                  <Label prefHeight="17.0" prefWidth="118.0" text="Time to spawn IP" translateX="1.0" translateY="180.0" />
-                  <TextField fx:id="leftTextField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#submit" prefWidth="80.0" translateX="10.0" translateY="180.0" />
+                  <Label prefHeight="17.0" prefWidth="145.0" text="    Time of live IP" textAlignment="CENTER" translateY="160.0" />
+                  <TextField fx:id="leftTextFieldLive" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#submit" prefHeight="25.0" prefWidth="80.0" translateX="10.0" translateY="160.0" />
+                  <Label prefHeight="17.0" prefWidth="118.0" text="Time to spawn IP" textAlignment="CENTER" translateX="1.0" translateY="180.0" />
+                  <TextField fx:id="leftTextFieldSpawn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#submit" prefWidth="80.0" translateX="10.0" translateY="180.0" />
                   <Label prefHeight="17.0" prefWidth="110.0" text="Probability for IP" textAlignment="CENTER" translateX="1.0" translateY="200.0">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
                   <ComboBox fx:id="comboBoxLeft" onAction="#selectComboBoxLeft" prefWidth="80.0" translateX="10.0" translateY="200.0" />
-                  <RadioButton fx:id="showTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" text="Show time" translateX="10.0" translateY="550.0">
+                  <RadioButton fx:id="showTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" text="Show time" translateX="10.0" translateY="500.0">
                      <padding>
                         <Insets top="20.0" />
                      </padding>
@@ -74,7 +78,7 @@
                         <ToggleGroup fx:id="time" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton fx:id="hideTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" selected="true" text="Hide time" toggleGroup="$time" translateX="10.0" translateY="550.0">
+                  <RadioButton fx:id="hideTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" selected="true" text="Hide time" toggleGroup="$time" translateX="10.0" translateY="500.0">
                      <padding>
                         <Insets top="20.0" />
                      </padding>

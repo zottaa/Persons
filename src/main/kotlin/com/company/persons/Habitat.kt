@@ -14,7 +14,6 @@ import kotlin.random.Random
 
 
 class Habitat : Application() {
-    private var listOfPersons : MutableList<Person> = mutableListOf()
     private var timer : Timer = Timer()
     private var simulationTime: Long = 0
     private var simulationStartTime: Long = 0
@@ -25,6 +24,8 @@ class Habitat : Application() {
     var timeToSpawnJP : Int = 1
     var chanceOfSpawnIP : Int = 50
     var chanceOfSpawnJP : Int = 50
+    var timeOfliveIP: Long = 10
+    var timeOfliveJP: Long = 10
     lateinit var window: Stage
     companion object {
         lateinit var instance: Habitat
@@ -58,10 +59,6 @@ class Habitat : Application() {
                         controller.hideTime()
                 }
 
-                KeyCode.K -> {
-                    controller.createModal(Habitat.instance.time(), listOfPersons)
-                }
-
                 else -> println("Unknown button")
             }
         }
@@ -92,7 +89,7 @@ class Habitat : Application() {
         if (controller.timeFlag) controller.showTime()
         if (controller.showInfo.isSelected) {
             timer.cancel()
-            controller.createModal(Habitat.instance.time(), listOfPersons)
+            controller.createModal(Habitat.instance.time())
         } else {
             endSimulation()
         }
@@ -102,11 +99,13 @@ class Habitat : Application() {
         controller.stopButton.isDisable = true
         controller.startButton.isDisable = false
         if (simulationStartTime.toInt() != 0) {
-                controller.showInformation(simulationTime, listOfPersons)
+                controller.showInformation(simulationTime)
             clearHabitat()
             timer.cancel()
             timer = Timer()
-            listOfPersons.clear()
+            Collections.vectorOfPersons.clear()
+            Collections.treeSetOfHashCodes.clear()
+            Collections.hashMapOfPersons.clear()
             simulationStartTime = 0
         }
     }
@@ -139,10 +138,27 @@ class Habitat : Application() {
             }
         }
         if (controller.timeFlag) controller.showTime()
+
+        checkObjectsTime()
+    }
+
+    private fun checkObjectsTime(){
+        val removeObjects: MutableList<Person> = mutableListOf()
+        Collections.vectorOfPersons.forEach {
+            if (it.timeOfBorn + it.timeOfLive <= (System.currentTimeMillis() - simulationStartTime) / 1000){
+                pane.children.remove(it.getImageView())
+                removeObjects.add(it)
+            }
+        }
+
+        removeObjects.forEach{
+            Collections.removeFromCollections(it)
+        }
+        removeObjects.clear()
     }
 
     private fun clearHabitat() {
-        listOfPersons.forEach {
+        Collections.vectorOfPersons.forEach {
             pane.children.remove(it.getImageView())
         }
     }
@@ -151,19 +167,23 @@ class Habitat : Application() {
         val x = Random.nextDouble(0.0, scene.width - 300)
         val y = Random.nextDouble(100.0, scene.height - 50)
 
-        val individualPerson = IndividualPerson(x, y)
+        val individualPerson = IndividualPerson(x, y, (System.currentTimeMillis() - simulationStartTime) / 1000, timeOfliveIP)
 
         pane.children.add(individualPerson.getImageView())
-        listOfPersons.add(individualPerson)
+        Collections.vectorOfPersons.add(individualPerson)
+        Collections.treeSetOfHashCodes.add(individualPerson.hashCode())
+        Collections.hashMapOfPersons[individualPerson.hashCode()] = individualPerson
     }
 
     private fun createJP(){
         val x = Random.nextDouble(0.0, scene.width - 300)
         val y = Random.nextDouble(100.0, scene.height - 50)
 
-        val juridicalPerson = JuridicalPerson(x, y)
+        val juridicalPerson = JuridicalPerson(x, y, (System.currentTimeMillis() - simulationStartTime) / 1000, timeOfliveJP)
         pane.children.add(juridicalPerson.getImageView())
-        listOfPersons.add(juridicalPerson)
+        Collections.vectorOfPersons.add(juridicalPerson)
+        Collections.treeSetOfHashCodes.add(juridicalPerson.hashCode())
+        Collections.hashMapOfPersons[juridicalPerson.hashCode()] = juridicalPerson
     }
 }
 

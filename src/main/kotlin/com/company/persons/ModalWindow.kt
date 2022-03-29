@@ -27,8 +27,8 @@ object ModalWindow {
         }
     }
 
-    fun createWindow(time: Long, listOfPersons: MutableList<Person>){
-        controller.modalShowInfo(time, listOfPersons)
+    fun createWindow(time: Long){
+        controller.modalShowInfo(time)
     }
 
 }
