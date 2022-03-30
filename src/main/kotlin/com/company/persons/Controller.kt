@@ -251,4 +251,9 @@ class Controller {
         if (showInfo.isSelected)
             ModalWindow.createWindow(time)
     }
+
+    fun currentObjectsModalWindow(){
+        Habitat.instance.stopSimulation(true)
+        ObjectsInfoModalWindow.createWindow()
+    }
 }

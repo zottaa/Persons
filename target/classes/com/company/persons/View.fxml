@@ -70,7 +70,8 @@
                      </font>
                   </Label>
                   <ComboBox fx:id="comboBoxLeft" onAction="#selectComboBoxLeft" prefWidth="80.0" translateX="10.0" translateY="200.0" />
-                  <RadioButton fx:id="showTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" text="Show time" translateX="10.0" translateY="500.0">
+                  <Button mnemonicParsing="false" onAction="#currentObjectsModalWindow" prefHeight="38.0" prefWidth="100.0" text="Current Objects" translateX="50.75" translateY="460.0" />
+                  <RadioButton fx:id="showTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" text="Show time" translateX="10.0" translateY="465.0">
                      <padding>
                         <Insets top="20.0" />
                      </padding>
@@ -78,7 +79,7 @@
                         <ToggleGroup fx:id="time" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton fx:id="hideTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" selected="true" text="Hide time" toggleGroup="$time" translateX="10.0" translateY="500.0">
+                  <RadioButton fx:id="hideTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" selected="true" text="Hide time" toggleGroup="$time" translateX="10.0" translateY="465.0">
                      <padding>
                         <Insets top="20.0" />
                      </padding>

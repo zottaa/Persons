@@ -9,10 +9,6 @@ import javafx.scene.text.Font
 
 class ModalWindowController {
 
-
-
-    @FXML
-    lateinit var pane: AnchorPane
     @FXML
     lateinit var okButton: Button
     @FXML

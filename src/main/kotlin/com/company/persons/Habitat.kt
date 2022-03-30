@@ -59,6 +59,10 @@ class Habitat : Application() {
                         controller.hideTime()
                 }
 
+                KeyCode.K -> {
+                    ObjectsInfoModalWindow.createWindow()
+                }
+
                 else -> println("Unknown button")
             }
         }
@@ -84,14 +88,19 @@ class Habitat : Application() {
         startSimulation(simulationTime)
     }
 
-    fun stopSimulation(){
+    fun stopSimulation(objectsModal: Boolean = false){
         simulationTime = System.currentTimeMillis() - simulationStartTime
-        if (controller.timeFlag) controller.showTime()
-        if (controller.showInfo.isSelected) {
+        if (objectsModal){
             timer.cancel()
-            controller.createModal(Habitat.instance.time())
-        } else {
-            endSimulation()
+        }
+        else {
+            if (controller.timeFlag) controller.showTime()
+            if (controller.showInfo.isSelected) {
+                timer.cancel()
+                controller.createModal(time())
+            } else {
+                endSimulation()
+            }
         }
     }
 
