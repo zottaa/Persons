@@ -9,10 +9,6 @@ import javafx.scene.text.Font
 
 class ModalWindowController {
 
-
-
-    @FXML
-    lateinit var pane: AnchorPane
     @FXML
     lateinit var okButton: Button
     @FXML
@@ -24,11 +20,11 @@ class ModalWindowController {
     @FXML
     lateinit var modalTextArea: TextArea
 
-    fun modalShowInfo(time: Long, listOfPersons: MutableList<Person>){
+    fun modalShowInfo(time: Long){
         val mainController:Controller = Habitat.instance.controller
         modalTextArea.apply {
             font = Font("Arial", 20.0)
-            text = mainController.getInformationString(time, listOfPersons)
+            text = mainController.getInformationString(time)
             isEditable = false
         }
         ModalWindow.window.showAndWait()

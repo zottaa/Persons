@@ -55,10 +55,16 @@ class Controller {
     private lateinit var comboBoxRight : ComboBox<String>
 
     @FXML
-    private lateinit var leftTextField: TextField
+    private lateinit var leftTextFieldLive: TextField
 
     @FXML
-    private lateinit var rightTextField: TextField
+    private lateinit var rightTextFieldLive: TextField
+
+    @FXML
+    private lateinit var leftTextFieldSpawn: TextField
+
+    @FXML
+    private lateinit var rightTextFieldSpawn: TextField
 
     @FXML
     private lateinit var menuShowTime: RadioMenuItem
@@ -72,8 +78,10 @@ class Controller {
     }
 
     fun addTextFields(){
-        leftTextField.text = Habitat.instance.timeToSpawnIP.toString()
-        rightTextField.text = Habitat.instance.timeToSpawnJP.toString()
+        leftTextFieldSpawn.text = Habitat.instance.timeToSpawnIP.toString()
+        rightTextFieldSpawn.text = Habitat.instance.timeToSpawnJP.toString()
+        leftTextFieldLive.text = Habitat.instance.timeOfliveIP.toString()
+        rightTextFieldLive.text = Habitat.instance.timeOfliveJP.toString()
     }
 
     private fun createAlert(str: String){
@@ -83,20 +91,35 @@ class Controller {
     }
 
     fun submit(){
-        val default : Pair<Int, Int> = Habitat.instance.timeToSpawnIP to Habitat.instance.timeToSpawnJP
+        val defaultLive : Pair<Long, Long> = Habitat.instance.timeOfliveIP to Habitat.instance.timeOfliveJP
+        val defaultSpawn : Pair<Int, Int> = Habitat.instance.timeToSpawnIP to Habitat.instance.timeToSpawnJP
         try {
-            Habitat.instance.timeToSpawnIP = leftTextField.text.toInt()
+            Habitat.instance.timeOfliveIP = leftTextFieldLive.text.toLong()
         } catch (e : NumberFormatException){
-            createAlert("You entered the wrong number in left field\nvalue of field set on previous")
-            Habitat.instance.timeToSpawnIP = default.first
-            leftTextField.text = default.first.toString()
+            createAlert("You entered the wrong number in left time of live field\nvalue of field set on previous")
+            Habitat.instance.timeOfliveIP = defaultLive.first
+            leftTextFieldLive.text = defaultLive.first.toString()
         }
         try {
-            Habitat.instance.timeToSpawnJP = rightTextField.text.toInt()
+            Habitat.instance.timeOfliveJP = rightTextFieldLive.text.toLong()
         } catch (e : NumberFormatException){
-            createAlert("You entered the wrong number in right field\nvalue of field set on previous")
-            Habitat.instance.timeToSpawnJP = default.second
-            rightTextField.text = default.second.toString()
+            createAlert("You entered the wrong number in right time of live field\nvalue of field set on previous")
+            Habitat.instance.timeOfliveJP = defaultLive.second
+            rightTextFieldLive.text = defaultLive.first.toString()
+        }
+        try {
+            Habitat.instance.timeToSpawnIP = leftTextFieldSpawn.text.toInt()
+        } catch (e : NumberFormatException){
+            createAlert("You entered the wrong number in left time to spawn field\nvalue of field set on previous")
+            Habitat.instance.timeToSpawnIP = defaultSpawn.first
+            leftTextFieldSpawn.text = defaultSpawn.first.toString()
+        }
+        try {
+            Habitat.instance.timeToSpawnJP = rightTextFieldSpawn.text.toInt()
+        } catch (e : NumberFormatException){
+            createAlert("You entered the wrong number in right time to spawn field\nvalue of field set on previous")
+            Habitat.instance.timeToSpawnJP = defaultSpawn.second
+            rightTextFieldSpawn.text = defaultSpawn.second.toString()
         }
     }
 
@@ -203,29 +226,34 @@ class Controller {
         }
     }
 
-    fun getInformationString(time: Long, listOfPersons: MutableList<Person>): String {
+    fun getInformationString(time: Long): String {
         var totalOfIndividualPersons = 0
         var totalOfJuridicalPersons = 0
-        listOfPersons.forEach {
+        Collections.vectorOfPersons.forEach {
             if (it is IndividualPerson) totalOfIndividualPersons++
             else totalOfJuridicalPersons++
         }
 
-        return "Time of simulation: ${time / 1000}\nNumber of spawned persons: ${listOfPersons.size}\nNumber of spawned " +
+        return "Time of simulation: ${time / 1000}\nNumber of spawned persons: ${Collections.vectorOfPersons.size}\nNumber of spawned " +
                 "individual persons $totalOfIndividualPersons\nNumber of spawned juridical persons $totalOfJuridicalPersons"
     }
 
-    fun showInformation(time: Long, listOfPersons: MutableList<Person>){
+    fun showInformation(time: Long){
         simulationStatistics.apply {
             layoutX = mainPane.width / 2 - 300
             layoutY = mainPane.height / 2 - 50
             font = Font("Arial", 20.0)
-            text = getInformationString(time, listOfPersons)
+            text = getInformationString(time)
         }
     }
 
-    fun createModal(time: Long, listOfPersons: MutableList<Person>){
+    fun createModal(time: Long){
         if (showInfo.isSelected)
-            ModalWindow.createWindow(time, listOfPersons)
+            ModalWindow.createWindow(time)
+    }
+
+    fun currentObjectsModalWindow(){
+        Habitat.instance.stopSimulation(true)
+        ObjectsInfoModalWindow.createWindow()
     }
 }
