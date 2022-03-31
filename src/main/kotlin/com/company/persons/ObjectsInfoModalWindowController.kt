@@ -3,6 +3,7 @@ package com.company.persons
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.fxml.FXML
+import javafx.scene.control.Button
 import javafx.scene.control.MenuItem
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
@@ -28,6 +29,9 @@ class ObjectsInfoModalWindowController {
 
     @FXML
     private lateinit var menuCloseButton: MenuItem
+
+    @FXML
+    private lateinit var currentObjectButton:Button
 
     fun closeWindow(){
         ObjectsInfoModalWindow.window.close()

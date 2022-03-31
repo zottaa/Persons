@@ -20,9 +20,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.company.persons.Controller">
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #FFEBCD;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.company.persons.Controller">
     <children>
-      <BorderPane fx:id="menuPane" layoutX="600.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="203.0" style="-fx-background-color: #fff;">
+      <BorderPane fx:id="menuPane" layoutX="587.0" layoutY="27.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="771.0" prefWidth="213.0" style="-fx-background-color: #FFE4C4;">
          <effect>
             <DropShadow />
          </effect>
@@ -30,7 +30,7 @@
               <Label fx:id="timeOutput" prefHeight="43.0" prefWidth="200.0" textAlignment="JUSTIFY" translateY="30.0" BorderPane.alignment="CENTER" />
          </top>
          <bottom>
-            <ButtonBar buttonMinWidth="50.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <ButtonBar buttonMinWidth="50.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="36.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <buttons>
                   <Button fx:id="startButton" mnemonicParsing="false" onAction="#startClick" text="Start" translateX="-45.0" />
                   <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopClick" text="Stop" translateX="-45.0" />
@@ -53,7 +53,8 @@
                      </font>
                   </Label>
                   <ComboBox fx:id="comboBoxRight" onAction="#selectComboBoxRight" prefWidth="80.0" translateX="10.0" translateY="200.0" />
-                  <CheckBox fx:id="showInfo" mnemonicParsing="false" onAction="#showInfoSwitch" prefHeight="47.0" prefWidth="100.0" text="Show info" translateX="10.0" translateY="525.0" />
+                  <CheckBox fx:id="showInfo" mnemonicParsing="false" onAction="#showInfoSwitch" prefHeight="47.0" prefWidth="96.0" text="Show info" translateX="1.0" translateY="435.0" />
+                  <Button fx:id="currentObjectButton" mnemonicParsing="false" onAction="#currentObjectsModalWindow" prefHeight="28.0" prefWidth="96.0" text="Live objects" translateY="435.0" />
                </children>
             </VBox>
          </right>
@@ -70,8 +71,7 @@
                      </font>
                   </Label>
                   <ComboBox fx:id="comboBoxLeft" onAction="#selectComboBoxLeft" prefWidth="80.0" translateX="10.0" translateY="200.0" />
-                  <Button mnemonicParsing="false" onAction="#currentObjectsModalWindow" prefHeight="38.0" prefWidth="100.0" text="Current Objects" translateX="50.75" translateY="460.0" />
-                  <RadioButton fx:id="showTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" text="Show time" translateX="10.0" translateY="465.0">
+                  <RadioButton fx:id="showTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" text="Show time" translateX="10.0" translateY="430.0">
                      <padding>
                         <Insets top="20.0" />
                      </padding>
@@ -79,7 +79,7 @@
                         <ToggleGroup fx:id="time" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton fx:id="hideTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" selected="true" text="Hide time" toggleGroup="$time" translateX="10.0" translateY="465.0">
+                  <RadioButton fx:id="hideTimeButton" mnemonicParsing="false" onAction="#timeRadioButtonToggle" selected="true" text="Hide time" toggleGroup="$time" translateX="10.0" translateY="430.0">
                      <padding>
                         <Insets top="20.0" />
                      </padding>
@@ -88,8 +88,8 @@
             </VBox>
          </left>
       </BorderPane>
-      <Label fx:id="simulationStatistics" layoutX="163.0" layoutY="198.0" />
-      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="800.0">
+      <Label fx:id="simulationStatistics" layoutX="163.0" layoutY="198.0" style="-fx-background-color: #FFDEAD;" />
+      <MenuBar prefHeight="25.0" prefWidth="800.0" style="-fx-background-color: #FFDEAD;">
         <menus>
           <Menu mnemonicParsing="false" text="Main">
             <items>
@@ -110,6 +110,9 @@
             </items>
           </Menu>
         </menus>
+         <effect>
+            <DropShadow />
+         </effect>
       </MenuBar>
     </children>
 </AnchorPane>
