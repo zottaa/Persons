@@ -11,15 +11,16 @@ import javafx.scene.layout.Pane
 import javafx.stage.Stage
 import java.util.*
 import kotlin.random.Random
+import kotlin.system.exitProcess
 
 
 class Habitat : Application() {
     private var timer : Timer = Timer()
     private var simulationTime: Long = 0
-    private var simulationStartTime: Long = 0
     private lateinit var pane : Pane
     private lateinit var scene : Scene
     lateinit var controller : Controller
+    var simulationStartTime: Long = 0
     var timeToSpawnIP : Int = 1
     var timeToSpawnJP : Int = 1
     var chanceOfSpawnIP : Int = 50
@@ -70,6 +71,10 @@ class Habitat : Application() {
             scene = this@Habitat.scene
             title = "Persons"
             icons.add(Image("icon.png"))
+            setOnCloseRequest { _->
+                Platform.exit()
+                exitProcess(0)
+            }
             show()
         }
         window = stage
@@ -96,6 +101,7 @@ class Habitat : Application() {
         else {
             if (controller.timeFlag) controller.showTime()
             if (controller.showInfo.isSelected) {
+                println(1)
                 timer.cancel()
                 controller.createModal(time())
             } else {

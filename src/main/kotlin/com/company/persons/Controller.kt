@@ -253,7 +253,12 @@ class Controller {
     }
 
     fun currentObjectsModalWindow(){
-        Habitat.instance.stopSimulation(true)
-        ObjectsInfoModalWindow.createWindow()
+        if (Habitat.instance.simulationStartTime.toInt() != 0) {
+            Habitat.instance.stopSimulation(true)
+            ObjectsInfoModalWindow.createWindow()
+        }
+        else {
+            createAlert("Simulation is not started!")
+        }
     }
 }

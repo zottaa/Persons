@@ -23,7 +23,9 @@ object ObjectsInfoModalWindow {
         window.apply {
             scene = _scene
             title = "Objects info"
-            setOnCloseRequest { controller.closeWindow() }
+            setOnCloseRequest {
+                controller.closeWindow()
+            }
         }
     }
 
