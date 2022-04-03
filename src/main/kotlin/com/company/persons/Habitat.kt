@@ -60,10 +60,6 @@ class Habitat : Application() {
                         controller.hideTime()
                 }
 
-                KeyCode.K -> {
-                    ObjectsInfoModalWindow.createWindow()
-                }
-
                 else -> println("Unknown button")
             }
         }
@@ -118,9 +114,7 @@ class Habitat : Application() {
             clearHabitat()
             timer.cancel()
             timer = Timer()
-            Collections.vectorOfPersons.clear()
-            Collections.treeSetOfHashCodes.clear()
-            Collections.hashMapOfPersons.clear()
+            Collections.clearCollections()
             simulationStartTime = 0
         }
     }
@@ -146,14 +140,12 @@ class Habitat : Application() {
                 createIP()
             }
         }
-
         if (((currentTime / 1000) % timeToSpawnJP).toInt() == 0){
             if (Random.nextInt(0, 99) < chanceOfSpawnJP){
                 createJP()
             }
         }
         if (controller.timeFlag) controller.showTime()
-
         checkObjectsTime()
     }
 
@@ -181,24 +173,17 @@ class Habitat : Application() {
     private fun createIP(){
         val x = Random.nextDouble(0.0, scene.width - 300)
         val y = Random.nextDouble(100.0, scene.height - 50)
-
         val individualPerson = IndividualPerson(x, y, (System.currentTimeMillis() - simulationStartTime) / 1000, timeOfliveIP)
-
         pane.children.add(individualPerson.getImageView())
-        Collections.vectorOfPersons.add(individualPerson)
-        Collections.treeSetOfHashCodes.add(individualPerson.hashCode())
-        Collections.hashMapOfPersons[individualPerson.hashCode()] = individualPerson
+        Collections.addIntoCollections(individualPerson)
     }
 
     private fun createJP(){
         val x = Random.nextDouble(0.0, scene.width - 300)
         val y = Random.nextDouble(100.0, scene.height - 50)
-
         val juridicalPerson = JuridicalPerson(x, y, (System.currentTimeMillis() - simulationStartTime) / 1000, timeOfliveJP)
         pane.children.add(juridicalPerson.getImageView())
-        Collections.vectorOfPersons.add(juridicalPerson)
-        Collections.treeSetOfHashCodes.add(juridicalPerson.hashCode())
-        Collections.hashMapOfPersons[juridicalPerson.hashCode()] = juridicalPerson
+        Collections.addIntoCollections(juridicalPerson)
     }
 }
 
