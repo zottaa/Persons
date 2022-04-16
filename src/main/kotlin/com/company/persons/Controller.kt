@@ -11,7 +11,7 @@ import java.lang.NumberFormatException
 
 class Controller {
 
-    var timeFlag : Boolean = false
+    var timeFlag: Boolean = false
 
     var comboBoxFlag = false
 
@@ -49,10 +49,10 @@ class Controller {
     private lateinit var menuHideTimeButton: RadioMenuItem
 
     @FXML
-    private lateinit var comboBoxLeft : ComboBox<String>
+    private lateinit var comboBoxLeft: ComboBox<String>
 
     @FXML
-    private lateinit var comboBoxRight : ComboBox<String>
+    private lateinit var comboBoxRight: ComboBox<String>
 
     @FXML
     private lateinit var leftTextFieldLive: TextField
@@ -69,75 +69,75 @@ class Controller {
     @FXML
     private lateinit var menuShowTime: RadioMenuItem
 
-    fun showInfoMenuSwitch (){
+    fun showInfoMenuSwitch() {
         showInfo.isSelected = showInfo.isSelected.not()
     }
 
-    fun showInfoSwitch (){
+    fun showInfoSwitch() {
         menuShowTime.isSelected = menuShowTime.isSelected.not()
     }
 
-    fun addTextFields(){
+    fun addTextFields() {
         leftTextFieldSpawn.text = Habitat.instance.timeToSpawnIP.toString()
         rightTextFieldSpawn.text = Habitat.instance.timeToSpawnJP.toString()
-        leftTextFieldLive.text = Habitat.instance.timeOfliveIP.toString()
-        rightTextFieldLive.text = Habitat.instance.timeOfliveJP.toString()
+        leftTextFieldLive.text = Habitat.instance.timeOfLiveIP.toString()
+        rightTextFieldLive.text = Habitat.instance.timeOfLiveJP.toString()
     }
 
-    private fun createAlert(str: String){
+    private fun createAlert(str: String) {
         val alert = Alert(Alert.AlertType.ERROR)
         alert.contentText = str
         alert.showAndWait()
     }
 
-    fun submit(){
-        val defaultLive : Pair<Long, Long> = Habitat.instance.timeOfliveIP to Habitat.instance.timeOfliveJP
-        val defaultSpawn : Pair<Int, Int> = Habitat.instance.timeToSpawnIP to Habitat.instance.timeToSpawnJP
+    fun submit() {
+        val defaultLive: Pair<Long, Long> = Habitat.instance.timeOfLiveIP to Habitat.instance.timeOfLiveJP
+        val defaultSpawn: Pair<Int, Int> = Habitat.instance.timeToSpawnIP to Habitat.instance.timeToSpawnJP
         try {
-            Habitat.instance.timeOfliveIP = leftTextFieldLive.text.toLong()
-        } catch (e : NumberFormatException){
+            Habitat.instance.timeOfLiveIP = leftTextFieldLive.text.toLong()
+        } catch (e: NumberFormatException) {
             createAlert("You entered the wrong number in left time of live field\nvalue of field set on previous")
-            Habitat.instance.timeOfliveIP = defaultLive.first
+            Habitat.instance.timeOfLiveIP = defaultLive.first
             leftTextFieldLive.text = defaultLive.first.toString()
         }
         try {
-            Habitat.instance.timeOfliveJP = rightTextFieldLive.text.toLong()
-        } catch (e : NumberFormatException){
+            Habitat.instance.timeOfLiveJP = rightTextFieldLive.text.toLong()
+        } catch (e: NumberFormatException) {
             createAlert("You entered the wrong number in right time of live field\nvalue of field set on previous")
-            Habitat.instance.timeOfliveJP = defaultLive.second
+            Habitat.instance.timeOfLiveJP = defaultLive.second
             rightTextFieldLive.text = defaultLive.first.toString()
         }
         try {
             Habitat.instance.timeToSpawnIP = leftTextFieldSpawn.text.toInt()
-        } catch (e : NumberFormatException){
+        } catch (e: NumberFormatException) {
             createAlert("You entered the wrong number in left time to spawn field\nvalue of field set on previous")
             Habitat.instance.timeToSpawnIP = defaultSpawn.first
             leftTextFieldSpawn.text = defaultSpawn.first.toString()
         }
         try {
             Habitat.instance.timeToSpawnJP = rightTextFieldSpawn.text.toInt()
-        } catch (e : NumberFormatException){
+        } catch (e: NumberFormatException) {
             createAlert("You entered the wrong number in right time to spawn field\nvalue of field set on previous")
             Habitat.instance.timeToSpawnJP = defaultSpawn.second
             rightTextFieldSpawn.text = defaultSpawn.second.toString()
         }
     }
 
-    fun selectComboBoxLeft(){
+    fun selectComboBoxLeft() {
         val str = comboBoxLeft.value
         val index = str.indexOf("%")
         val value = str.substring(0 until index)
         Habitat.instance.chanceOfSpawnIP = value.toInt()
     }
 
-    fun selectComboBoxRight(){
+    fun selectComboBoxRight() {
         val str = comboBoxRight.value
         val index = str.indexOf("%")
         val value = str.substring(0 until index)
         Habitat.instance.chanceOfSpawnJP = value.toInt()
     }
 
-    fun addComboBoxes(){
+    fun addComboBoxes() {
         if (!comboBoxFlag) {
             val listOfProbability = FXCollections.observableArrayList(
                 "0%",
@@ -160,31 +160,30 @@ class Controller {
         }
     }
 
-    fun startClick(){
+    fun startClick() {
         Habitat.instance.startSimulation()
         startButton.isDisable = true
         stopButton.isDisable = false
     }
 
-    fun switchTimeFlag(){
+    fun switchTimeFlag() {
         timeFlag = timeFlag.not()
         if (timeFlag) {
             showTimeButton.isSelected = true
             menuShowTimeButton.isSelected = true
-        }
-        else {
+        } else {
             hideTimeButton.isSelected = true
             menuHideTimeButton.isSelected = true
         }
 
     }
 
-    fun stopClick(){
+    fun stopClick() {
         Habitat.instance.stopSimulation()
     }
 
-    fun menuTimeRadioButtonToggle(){
-        if (menuShowTimeButton.isSelected){
+    fun menuTimeRadioButtonToggle() {
+        if (menuShowTimeButton.isSelected) {
             showTimeButton.isSelected = true
             timeFlag = true
             showTime()
@@ -195,8 +194,8 @@ class Controller {
         }
     }
 
-    fun timeRadioButtonToggle(){
-        if (showTimeButton.isSelected){
+    fun timeRadioButtonToggle() {
+        if (showTimeButton.isSelected) {
             menuShowTimeButton.isSelected = true
             timeFlag = true
             showTime()
@@ -207,7 +206,7 @@ class Controller {
         }
     }
 
-    fun hideTime(){
+    fun hideTime() {
         timeOutput.text = ""
     }
 
@@ -215,7 +214,7 @@ class Controller {
         simulationStatistics.text = ""
     }
 
-    fun showTime(){
+    fun showTime() {
         val time = Habitat.instance.time()
         val str = "Time: ${time / 1000} seconds"
         timeOutput.apply {
@@ -238,7 +237,7 @@ class Controller {
                 "individual persons $totalOfIndividualPersons\nNumber of spawned juridical persons $totalOfJuridicalPersons"
     }
 
-    fun showInformation(time: Long){
+    fun showInformation(time: Long) {
         simulationStatistics.apply {
             layoutX = mainPane.width / 2 - 300
             layoutY = mainPane.height / 2 - 50
@@ -247,17 +246,16 @@ class Controller {
         }
     }
 
-    fun createModal(time: Long){
+    fun createModal(time: Long) {
         if (showInfo.isSelected)
             ModalWindow.createWindow(time)
     }
 
-    fun currentObjectsModalWindow(){
+    fun currentObjectsModalWindow() {
         if (Habitat.instance.simulationStartTime.toInt() != 0) {
             Habitat.instance.stopSimulation(true)
             ObjectsInfoModalWindow.createWindow()
-        }
-        else {
+        } else {
             createAlert("Simulation is not started!")
         }
     }

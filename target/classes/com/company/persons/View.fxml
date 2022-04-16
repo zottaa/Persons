@@ -43,6 +43,7 @@
          <right>
             <VBox prefHeight="717.0" prefWidth="101.5" BorderPane.alignment="CENTER">
                <children>
+                  <Button mnemonicParsing="false" prefWidth="80.0" text="Stop JP" translateX="10.0" translateY="100.0" />
                   <Label prefHeight="17.0" prefWidth="150.0" text="    Time of live JP" translateY="160.0" />
                   <TextField fx:id="rightTextFieldLive" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#submit" prefHeight="25.0" prefWidth="80.0" translateX="10.0" translateY="160.0" />
                   <Label prefHeight="17.0" prefWidth="117.0" text="Time to spawn JP" translateX="1.0" translateY="180.0" />
@@ -61,6 +62,7 @@
          <left>
             <VBox prefHeight="200.0" prefWidth="101.5" BorderPane.alignment="CENTER">
                <children>
+                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Stop IP" translateX="10.0" translateY="100.0" />
                   <Label prefHeight="17.0" prefWidth="145.0" text="    Time of live IP" textAlignment="CENTER" translateY="160.0" />
                   <TextField fx:id="leftTextFieldLive" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#submit" prefHeight="25.0" prefWidth="80.0" translateX="10.0" translateY="160.0" />
                   <Label prefHeight="17.0" prefWidth="118.0" text="Time to spawn IP" textAlignment="CENTER" translateX="1.0" translateY="180.0" />
