@@ -2,11 +2,14 @@ package com.company.persons
 
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import kotlin.coroutines.*
 
-abstract class Person (private val _x : Double, private val _y : Double, override val timeOfBorn: Long,
-                       override val timeOfLive: Long, private val path: String) : IBehaviour {
+abstract class Person (
+    private val point: Point, override val timeOfBorn: Long,
+    override val timeOfLive: Long, private val path: String, private val destinationPoint: Point
+) : BaseAI(), IBehaviour {
 
-    private var imageView : ImageView
+    private var imageView: ImageView
 
     init {
         val image = Image(path)
@@ -15,10 +18,10 @@ abstract class Person (private val _x : Double, private val _y : Double, overrid
 
     fun getImageView(): ImageView {
         imageView.apply {
-            this.x = _x
-            this.y = _y
-            this.fitWidth = 50.0
-            this.fitHeight = 50.0
+            x = point.x
+            y = point.y
+            fitWidth = 50.0
+            fitHeight = 50.0
         }
         return imageView
     }
@@ -29,8 +32,8 @@ abstract class Person (private val _x : Double, private val _y : Double, overrid
 
         other as Person
 
-        if (_x != other._x) return false
-        if (_y != other._y) return false
+        if (point.x != other.point.x) return false
+        if (point.y != other.point.y) return false
         if (timeOfBorn != other.timeOfBorn) return false
         if (timeOfLive != other.timeOfLive) return false
         if (path != other.path) return false
@@ -40,14 +43,12 @@ abstract class Person (private val _x : Double, private val _y : Double, overrid
     }
 
     override fun hashCode(): Int {
-        var result = _x.hashCode()
-        result = 31 * result + _y.hashCode()
+        var result = point.hashCode()
         result = 31 * result + timeOfBorn.hashCode()
         result = 31 * result + timeOfLive.hashCode()
         result = 31 * result + path.hashCode()
         result = 31 * result + imageView.hashCode()
         return result
     }
-
 
 }
