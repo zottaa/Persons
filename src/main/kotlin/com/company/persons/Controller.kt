@@ -13,7 +13,11 @@ class Controller {
 
     var timeFlag: Boolean = false
 
-    var comboBoxFlag = false
+    private var comboBoxFlag = false
+
+    private var threadIPFlag = true
+
+    private var threadJPFlag = true
 
     @FXML
     lateinit var showInfo: CheckBox
@@ -69,6 +73,12 @@ class Controller {
     @FXML
     private lateinit var menuShowTime: RadioMenuItem
 
+    @FXML
+    lateinit var leftThreadComboBox: ComboBox<String>
+
+    @FXML
+    lateinit var rightThreadComboBox: ComboBox<String>
+
     fun showInfoMenuSwitch() {
         showInfo.isSelected = showInfo.isSelected.not()
     }
@@ -123,6 +133,17 @@ class Controller {
         }
     }
 
+    fun selectThreadComboBoxLeft() {
+        val str = leftThreadComboBox.value
+        Habitat.instance.setPriorityIP(str)
+    }
+
+    fun selectThreadComboBoxRight() {
+        val str = rightThreadComboBox.value
+        Habitat.instance.setPriorityJP(str)
+    }
+
+
     fun selectComboBoxLeft() {
         val str = comboBoxLeft.value
         val index = str.indexOf("%")
@@ -154,9 +175,21 @@ class Controller {
             )
             comboBoxLeft.items = listOfProbability
             comboBoxRight.items = listOfProbability
-            comboBoxFlag = true
             comboBoxRight.value = (Habitat.instance.chanceOfSpawnJP.toString() + "%")
             comboBoxLeft.value = (Habitat.instance.chanceOfSpawnIP.toString() + "%")
+
+            val listOfPriorities = FXCollections.observableArrayList(
+                "MAX",
+                "NORM",
+                "MIN"
+            )
+
+            leftThreadComboBox.items = listOfPriorities
+            rightThreadComboBox.items = listOfPriorities
+            leftThreadComboBox.value = "NORM"
+            rightThreadComboBox.value = "NORM"
+
+            comboBoxFlag = true
         }
     }
 
@@ -257,6 +290,26 @@ class Controller {
             ObjectsInfoModalWindow.createWindow()
         } else {
             createAlert("Simulation is not started!")
+        }
+    }
+
+    fun threadIPAction() {
+        if (threadIPFlag) {
+            Habitat.instance.threadIPWait()
+            threadIPFlag = false
+        } else {
+            Habitat.instance.threadIPNotify()
+            threadIPFlag = true
+        }
+    }
+
+    fun threadJPAction() {
+        if (threadJPFlag) {
+            Habitat.instance.threadJPWait()
+            threadJPFlag = false
+        } else {
+            Habitat.instance.threadJPNotify()
+            threadJPFlag = true
         }
     }
 }

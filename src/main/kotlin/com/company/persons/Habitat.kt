@@ -10,26 +10,28 @@ import javafx.scene.input.KeyCode
 import javafx.scene.layout.Pane
 import javafx.stage.Stage
 import java.util.*
+import kotlin.concurrent.thread
 import kotlin.random.Random
 import kotlin.system.exitProcess
 
 
 class Habitat : Application() {
-    private var flagIP = false
-    private var flagJP = false
     private var timer: Timer = Timer()
     private var simulationTime: Long = 0
     private lateinit var pane: Pane
     private lateinit var scene: Scene
+    private lateinit var threadJP: JuridicalPersonThread
+    private lateinit var threadIP: IndividualPersonThread
+    val lock = Object()
     lateinit var mainThread: Thread
     lateinit var controller: Controller
     var simulationStartTime: Long = 0
-    var timeToSpawnIP: Int = 1
-    var timeToSpawnJP: Int = 1
-    var chanceOfSpawnIP: Int = 50
-    var chanceOfSpawnJP: Int = 50
-    var timeOfLiveIP: Long = 10
-    var timeOfLiveJP: Long = 10
+    var timeToSpawnIP: Int = 5
+    var timeToSpawnJP: Int = 3
+    var chanceOfSpawnIP: Int = 0
+    var chanceOfSpawnJP: Int = 100
+    var timeOfLiveIP: Long = 1000
+    var timeOfLiveJP: Long = 1000
     lateinit var window: Stage
 
     companion object {
@@ -44,6 +46,8 @@ class Habitat : Application() {
         val root: Parent = loader.load()
         controller = loader.getController()
         scene = Scene(root, 800.0, 800.0)
+        threadIP = IndividualPersonThread()
+        threadJP = JuridicalPersonThread()
         pane = loader.getRoot()
         scene.setOnKeyPressed { event ->
             when (event.code) {
@@ -122,6 +126,10 @@ class Habitat : Application() {
     }
 
     fun startSimulation(previousSimulationTime: Long = 0) {
+        threadIP.start()
+        threadJP.start()
+        this.setPriorityIP(controller.leftThreadComboBox.value)
+        this.setPriorityJP(controller.rightThreadComboBox.value)
         timer = Timer()
         controller.submit()
         controller.hideStatistics()
@@ -130,10 +138,49 @@ class Habitat : Application() {
         simulationStartTime = System.currentTimeMillis() - previousSimulationTime
         val task: TimerTask = object : TimerTask() {
             override fun run() {
-                Platform.runLater { update(System.currentTimeMillis() - simulationStartTime) }
+                Platform.runLater {
+                    update(System.currentTimeMillis() - simulationStartTime)
+                    moveObjects()
+                }
             }
         }
         timer.scheduleAtFixedRate(task, 1000, 1000)
+    }
+
+    fun threadIPWait() {
+        threadIP.threadWait()
+    }
+
+    fun threadJPWait() {
+        threadJP.threadWait()
+    }
+
+    fun threadIPNotify() {
+        threadIP.threadNotify()
+    }
+
+    fun threadJPNotify() {
+        threadJP.threadNotify()
+    }
+
+    fun setPriorityIP(str: String) {
+        when(str) {
+            "MAX" -> threadIP.priority = Thread.MAX_PRIORITY
+
+            "NORM" -> threadIP.priority = Thread.NORM_PRIORITY
+
+            "MIN" -> threadIP.priority = Thread.MIN_PRIORITY
+        }
+    }
+
+    fun setPriorityJP(str: String) {
+        when(str) {
+            "MAX" -> threadJP.priority = Thread.MAX_PRIORITY
+
+            "NORM" -> threadJP.priority = Thread.NORM_PRIORITY
+
+            "MIN" -> threadJP.priority = Thread.MIN_PRIORITY
+        }
     }
 
     private fun update(currentTime: Long) {
@@ -147,7 +194,6 @@ class Habitat : Application() {
                 createJP()
             }
         }
-        moveObjects()
         if (controller.timeFlag) controller.showTime()
 
         checkObjectsTime()
@@ -182,7 +228,7 @@ class Habitat : Application() {
 
     private fun createIP() {
         val x = Random.nextDouble(0.0, scene.width - 300)
-        val y = Random.nextDouble(100.0, scene.height - 50)
+        val y = Random.nextDouble(50.0, scene.height - 50)
         val destinationPoint = Point(Random.nextDouble(250.0, 500.0), Random.nextDouble(425.0, 750.0))
         val individualPerson =
             IndividualPerson(
@@ -192,14 +238,13 @@ class Habitat : Application() {
                 destinationPoint
             )
         pane.children.add(individualPerson.getImageView())
-        //individualPerson.createThread()
         Collections.addIntoCollections(individualPerson)
     }
 
     private fun createJP() {
         val x = Random.nextDouble(0.0, scene.width - 300)
-        val y = Random.nextDouble(100.0, scene.height - 50)
-        val destinationPoint = Point(Random.nextDouble(0.0, 250.0), Random.nextDouble(100.0, 425.0))
+        val y = Random.nextDouble(50.0, scene.height - 50)
+        val destinationPoint = Point(Random.nextDouble(0.0, 250.0), Random.nextDouble(50.0, 425.0))
         val juridicalPerson =
             JuridicalPerson(
                 Point(x, y),
@@ -208,7 +253,6 @@ class Habitat : Application() {
                 destinationPoint
             )
         pane.children.add(juridicalPerson.getImageView())
-        //juridicalPerson.createThread()
         Collections.addIntoCollections(juridicalPerson)
     }
 }

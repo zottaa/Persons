@@ -4,12 +4,15 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import kotlin.coroutines.*
 
-abstract class Person (
+abstract class Person(
     private val point: Point, override val timeOfBorn: Long,
     override val timeOfLive: Long, private val path: String, private val destinationPoint: Point
-) : BaseAI(), IBehaviour {
+) : IBehaviour {
 
     private var imageView: ImageView
+
+    abstract fun calculateNextStep()
+    abstract fun endOfMove(): Boolean
 
     init {
         val image = Image(path)
