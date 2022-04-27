@@ -1,36 +1,23 @@
 package com.company.persons
 
-import kotlin.concurrent.thread
-
 class IndividualPerson(
     private val point: Point, override val timeOfBorn: Long,
     override val timeOfLive: Long, private val destinationPoint: Point
-) : Person(point, timeOfBorn, timeOfLive, "IP.jpg", destinationPoint) {
+) : Person(point, timeOfBorn, timeOfLive, "IP.png", destinationPoint) {
 
     private var dx: Double = 0.0
     private var dy: Double = 0.0
     private val VELOCITY = 0.01
     private val startPoint: Point = point
-    private lateinit var _thread: Thread
     private var waitFlag = false
     private var notifyFlag = false
 
     init {
         dx = destinationPoint.x - point.x
         dy = destinationPoint.y - point.y
-        this.start()
     }
 
-    override fun run() {
-        super.run()
-        while (!endOfMove()) {
-            sleep(1000)
-            this.move()
-        }
-    }
-
-
-    override fun move() {
+    override fun calculateNextStep() {
         point.x = point.x + dx * VELOCITY
         point.y = point.y + dy * VELOCITY
     }
