@@ -10,26 +10,23 @@ import javafx.scene.input.KeyCode
 import javafx.scene.layout.Pane
 import javafx.stage.Stage
 import java.util.*
-import kotlin.concurrent.thread
 import kotlin.random.Random
 import kotlin.system.exitProcess
 
 
-class Habitat : Application() {
+class Habitat() : Application() {
     private var timer: Timer = Timer()
     private var simulationTime: Long = 0
     private lateinit var pane: Pane
     private lateinit var scene: Scene
     private lateinit var threadJP: JuridicalPersonThread
     private lateinit var threadIP: IndividualPersonThread
-    val lock = Object()
-    lateinit var mainThread: Thread
     lateinit var controller: Controller
     var simulationStartTime: Long = 0
     var timeToSpawnIP: Int = 5
     var timeToSpawnJP: Int = 3
-    var chanceOfSpawnIP: Int = 0
-    var chanceOfSpawnJP: Int = 100
+    var chanceOfSpawnIP: Int = 50
+    var chanceOfSpawnJP: Int = 50
     var timeOfLiveIP: Long = 1000
     var timeOfLiveJP: Long = 1000
     lateinit var window: Stage
@@ -41,7 +38,6 @@ class Habitat : Application() {
 
     override fun start(stage: Stage) {
         instance = this
-        mainThread = Thread.currentThread()
         val loader = FXMLLoader(javaClass.getResource("View.fxml"))
         val root: Parent = loader.load()
         controller = loader.getController()
@@ -75,7 +71,7 @@ class Habitat : Application() {
             scene = this@Habitat.scene
             title = "Persons"
             icons.add(Image("icon.png"))
-            setOnCloseRequest { _ ->
+            setOnCloseRequest {
                 Platform.exit()
                 exitProcess(0)
             }
@@ -164,7 +160,7 @@ class Habitat : Application() {
     }
 
     fun setPriorityIP(str: String) {
-        when(str) {
+        when (str) {
             "MAX" -> threadIP.priority = Thread.MAX_PRIORITY
 
             "NORM" -> threadIP.priority = Thread.NORM_PRIORITY
@@ -174,7 +170,7 @@ class Habitat : Application() {
     }
 
     fun setPriorityJP(str: String) {
-        when(str) {
+        when (str) {
             "MAX" -> threadJP.priority = Thread.MAX_PRIORITY
 
             "NORM" -> threadJP.priority = Thread.NORM_PRIORITY
@@ -258,5 +254,6 @@ class Habitat : Application() {
 }
 
 fun main(args: Array<String>) {
-    Application.launch(Habitat::class.java, *args)
+    val habitat = Habitat()
+    Application.launch(habitat::class.java, *args)
 }
