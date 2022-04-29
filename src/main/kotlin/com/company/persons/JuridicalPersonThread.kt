@@ -11,10 +11,11 @@ class JuridicalPersonThread : BaseAI() {
                     with(this as Object) {
                         wait()
                     }
-                super.run()
-                Thread.sleep(1000)
+            }
+            synchronized(Collections.vectorOfPersons) {
                 move()
             }
+            Thread.sleep(1000)
         }
     }
 
@@ -29,7 +30,9 @@ class JuridicalPersonThread : BaseAI() {
     }
 
     override fun threadWait() {
-        isWait = isWait.not()
+        synchronized(Collections.vectorOfPersons) {
+            isWait = isWait.not()
+        }
     }
 
     override fun threadNotify() {
