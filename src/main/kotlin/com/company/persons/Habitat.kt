@@ -9,119 +9,258 @@ import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.Pane
 import javafx.stage.Stage
+import java.io.DataOutputStream
 import java.util.*
 import kotlin.random.Random
+import kotlin.system.exitProcess
 
 
 class Habitat : Application() {
+    private var timer: Timer = Timer()
+    private var simulationTime: Long = 0
+    private var socket: Client = Client()
+    private lateinit var pane: Pane
+    private lateinit var scene: Scene
+    private lateinit var threadJP: JuridicalPersonThread
+    private lateinit var threadIP: IndividualPersonThread
+    lateinit var controller: Controller
+    var simulationStartTime: Long = 0
+    var timeToSpawnIP: Int = 5
+    var timeToSpawnJP: Int = 3
+    var chanceOfSpawnIP: Int = 50
+    var chanceOfSpawnJP: Int = 50
+    var timeOfLiveIP: Long = 1000
+    var timeOfLiveJP: Long = 1000
+    lateinit var window: Stage
 
-    private var listOfPersons : MutableList<Person> = mutableListOf()
-    private var timer : Timer = Timer()
-    private var simulationStartTime: Long = 0
-    private lateinit var _pane : Pane
-    private lateinit var _scene : Scene
-    private lateinit var _controller : Controller
-    private val timeToSpawnIP : Int = 1
-    private val timeToSpawnJP : Int = 1
-    private val chanceOfSpawnIP : Int = 50
-    private val chanceOfSpawnJP : Int = 50
-    private var timeFlag: Boolean = false
+    companion object {
+        lateinit var instance: Habitat
+    }
+
 
     override fun start(stage: Stage) {
+        instance = this
         val loader = FXMLLoader(javaClass.getResource("View.fxml"))
         val root: Parent = loader.load()
-        _controller = loader.getController()
-        _scene = Scene(root, 900.0, 900.0)
-        _pane = loader.getRoot()
-
-        _scene.setOnKeyPressed { event ->
-            when(event.code){
+        controller = loader.getController()
+        scene = Scene(root, 800.0, 800.0)
+        threadIP = IndividualPersonThread()
+        threadJP = JuridicalPersonThread()
+        pane = loader.getRoot()
+        scene.setOnKeyPressed { event ->
+            when (event.code) {
                 KeyCode.B -> {
-                    if (simulationStartTime.toInt() == 0) _controller.hideLabel()
-                    startSimulation()
+                    if (simulationStartTime.toInt() == 0) controller.hideStatistics()
+                    controller.startClick()
                 }
 
                 KeyCode.E -> {
-                    _controller.showInformation(System.currentTimeMillis() - simulationStartTime, listOfPersons)
-                    clearHabitat()
-                    timer.cancel()
-                    timer = Timer()
-                    listOfPersons.clear()
-                    simulationStartTime = 0
+                    controller.stopClick()
                 }
 
                 KeyCode.T -> {
-                    timeFlag = timeFlag.not()
-                    if (!timeFlag) _controller.hideLabel()
-                    else _controller.showTime(System.currentTimeMillis() - simulationStartTime)
+                    controller.switchTimeFlag()
+                    if (controller.timeFlag)
+                        controller.showTime()
+                    else
+                        controller.hideTime()
                 }
 
                 else -> println("Unknown button")
             }
         }
         stage.apply {
-            scene = _scene
+            scene = this@Habitat.scene
             title = "Persons"
             icons.add(Image("icon.png"))
+            setOnCloseRequest {
+                socket.close()
+                Platform.exit()
+                exitProcess(0)
+            }
             show()
+        }
+        window = stage
+        controller.addComboBoxes()
+        controller.addTextFields()
+        Thread(socket).start()
+    }
+
+    fun time(): Long {
+        return if (simulationStartTime.toInt() != 0)
+            (System.currentTimeMillis() - simulationStartTime)
+        else
+            0.toLong()
+    }
+
+    fun resumeSimulation() {
+        startSimulation(simulationTime)
+    }
+
+    fun stopSimulation(objectsModal: Boolean = false) {
+        simulationTime = System.currentTimeMillis() - simulationStartTime
+        if (objectsModal) {
+            timer.cancel()
+        } else {
+            if (controller.timeFlag) controller.showTime()
+            if (controller.showInfo.isSelected) {
+                timer.cancel()
+                controller.createModal(time())
+            } else {
+                endSimulation()
+            }
         }
     }
 
-    private fun startSimulation(){
-        simulationStartTime = System.currentTimeMillis()
+    fun endSimulation() {
+        controller.stopButton.isDisable = true
+        controller.startButton.isDisable = false
+        if (simulationStartTime.toInt() != 0) {
+            controller.showInformation(simulationTime)
+            clearHabitat()
+            timer.cancel()
+            timer = Timer()
+            Collections.clearCollections()
+            simulationStartTime = 0
+        }
+    }
+
+    fun startSimulation(previousSimulationTime: Long = 0) {
+        threadIP.start()
+        threadJP.start()
+        this.setPriorityIP(controller.leftThreadComboBox.value)
+        this.setPriorityJP(controller.rightThreadComboBox.value)
+        timer = Timer()
+        controller.submit()
+        controller.hideStatistics()
+        if (previousSimulationTime.toInt() == 0)
+            clearHabitat()
+        simulationStartTime = System.currentTimeMillis() - previousSimulationTime
         val task: TimerTask = object : TimerTask() {
             override fun run() {
-                Platform.runLater { update(System.currentTimeMillis() - simulationStartTime) }
+                Platform.runLater {
+                    update(System.currentTimeMillis() - simulationStartTime)
+                    moveObjects()
+                }
             }
         }
         timer.scheduleAtFixedRate(task, 1000, 1000)
     }
 
-    private fun update(currentTime: Long){
-        if (((currentTime / 1000) % timeToSpawnIP).toInt() == 0){
-            if (Random.nextInt(0, 100) < chanceOfSpawnIP){
+    fun threadIPWait() {
+        threadIP.threadWait()
+    }
+
+    fun threadJPWait() {
+        threadJP.threadWait()
+    }
+
+    fun threadIPNotify() {
+        threadIP.threadNotify()
+    }
+
+    fun threadJPNotify() {
+        threadJP.threadNotify()
+    }
+
+    fun setPriorityIP(str: String) {
+        when (str) {
+            "MAX" -> threadIP.priority = Thread.MAX_PRIORITY
+
+            "NORM" -> threadIP.priority = Thread.NORM_PRIORITY
+
+            "MIN" -> threadIP.priority = Thread.MIN_PRIORITY
+        }
+    }
+
+    fun setPriorityJP(str: String) {
+        when (str) {
+            "MAX" -> threadJP.priority = Thread.MAX_PRIORITY
+
+            "NORM" -> threadJP.priority = Thread.NORM_PRIORITY
+
+            "MIN" -> threadJP.priority = Thread.MIN_PRIORITY
+        }
+    }
+
+    private fun update(currentTime: Long) {
+        if (((currentTime / 1000) % timeToSpawnIP).toInt() == 0) {
+            if (Random.nextInt(0, 99) < chanceOfSpawnIP) {
                 createIP()
             }
         }
-
-        if (((currentTime / 1000) % timeToSpawnJP).toInt() == 0){
-            if (Random.nextInt(0, 99) < chanceOfSpawnJP){
+        if (((currentTime / 1000) % timeToSpawnJP).toInt() == 0) {
+            if (Random.nextInt(0, 99) < chanceOfSpawnJP) {
                 createJP()
             }
         }
-        if (timeFlag) _controller.showTime(currentTime)
+        if (controller.timeFlag) controller.showTime()
+
+        checkObjectsTime()
+    }
+
+    private fun moveObjects() {
+        Collections.vectorOfPersons.forEach {
+            it.getImageView()
+        }
+    }
+
+    private fun checkObjectsTime() {
+        val removeObjects: MutableList<Person> = mutableListOf()
+        Collections.vectorOfPersons.forEach {
+            if (it.timeOfBorn + it.timeOfLive <= (System.currentTimeMillis() - simulationStartTime) / 1000) {
+                pane.children.remove(it.getImageView())
+                removeObjects.add(it)
+            }
+        }
+
+        removeObjects.forEach {
+            Collections.removeFromCollections(it)
+        }
+        removeObjects.clear()
     }
 
     private fun clearHabitat() {
-        listOfPersons.forEach {
-            _pane.children.remove(it.getImageView())
+        Collections.vectorOfPersons.forEach {
+            pane.children.remove(it.getImageView())
         }
     }
 
-    private fun createIP(){
-        val x = Random.nextDouble(0.0, _scene.width - 300)
-        val y = Random.nextDouble(0.0, _scene.height - 50)
-
-        val individualPerson = IndividualPerson(x, y)
-
-        _pane.children.add(individualPerson.getImageView())
-        listOfPersons.add(individualPerson)
+    private fun createIP() {
+        val x = Random.nextDouble(0.0, scene.width - 300)
+        val y = Random.nextDouble(50.0, scene.height - 50)
+        val destinationPoint = Point(Random.nextDouble(250.0, 500.0), Random.nextDouble(425.0, 750.0))
+        val individualPerson =
+            IndividualPerson(
+                Point(x, y),
+                (System.currentTimeMillis() - simulationStartTime) / 1000,
+                timeOfLiveIP,
+                destinationPoint
+            )
+        pane.children.add(individualPerson.getImageView())
+        Collections.addIntoCollections(individualPerson)
     }
 
-    private fun createJP(){
-        val x = Random.nextDouble(0.0, _scene.width - 250)
-        val y = Random.nextDouble(0.0, _scene.height - 50)
-
-        val juridicalPerson = JuridicalPerson(x, y)
-        _pane.children.add(juridicalPerson.getImageView())
-        listOfPersons.add(juridicalPerson)
+    private fun createJP() {
+        val x = Random.nextDouble(0.0, scene.width - 300)
+        val y = Random.nextDouble(50.0, scene.height - 50)
+        val destinationPoint = Point(Random.nextDouble(0.0, 250.0), Random.nextDouble(50.0, 425.0))
+        val juridicalPerson =
+            JuridicalPerson(
+                Point(x, y),
+                (System.currentTimeMillis() - simulationStartTime) / 1000,
+                timeOfLiveJP,
+                destinationPoint
+            )
+        pane.children.add(juridicalPerson.getImageView())
+        Collections.addIntoCollections(juridicalPerson)
     }
 
-    companion object{
-        @JvmStatic
-        fun main(args: Array<String>){
-            launch (Habitat::class.java, *args)
-        }
+    fun synchronizedChange(message: String) {
+        socket.change(message)
     }
 }
 
+fun main(args: Array<String>) {
+    Application.launch(Habitat::class.java, *args)
+}
