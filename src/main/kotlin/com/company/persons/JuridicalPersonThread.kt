@@ -30,7 +30,9 @@ class JuridicalPersonThread : BaseAI() {
     }
 
     override fun threadWait() {
-        isWait = isWait.not()
+        synchronized(Collections.vectorOfPersons) {
+            isWait = isWait.not()
+        }
     }
 
     override fun threadNotify() {

@@ -9,7 +9,6 @@ import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.Pane
 import javafx.stage.Stage
-import java.io.DataOutputStream
 import java.util.*
 import kotlin.random.Random
 import kotlin.system.exitProcess
@@ -23,6 +22,7 @@ class Habitat : Application() {
     private lateinit var scene: Scene
     private lateinit var threadJP: JuridicalPersonThread
     private lateinit var threadIP: IndividualPersonThread
+    lateinit var mainThread: Thread
     lateinit var controller: Controller
     var simulationStartTime: Long = 0
     var timeToSpawnIP: Int = 5
@@ -40,6 +40,7 @@ class Habitat : Application() {
 
     override fun start(stage: Stage) {
         instance = this
+        mainThread = Thread.currentThread()
         val loader = FXMLLoader(javaClass.getResource("View.fxml"))
         val root: Parent = loader.load()
         controller = loader.getController()
@@ -200,8 +201,10 @@ class Habitat : Application() {
     }
 
     private fun moveObjects() {
-        Collections.vectorOfPersons.forEach {
-            it.getImageView()
+        synchronized(com.company.persons.Collections.vectorOfPersons) {
+            Collections.vectorOfPersons.forEach {
+                it.getImageView()
+            }
         }
     }
 
