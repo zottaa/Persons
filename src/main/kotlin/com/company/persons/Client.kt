@@ -1,32 +1,49 @@
 package com.company.persons
 
-import javafx.application.Application
 import java.io.*
 import java.net.Socket
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import javafx.application.Platform
 
 class Client(private val socket: Socket = Socket("localhost", 8000)) : Runnable {
 
-    override fun run() {
-        val out = DataOutputStream(socket.getOutputStream())
-        val input = BufferedReader(InputStreamReader(socket.getInputStream()))
+    var message: String = ""
 
-        if (input.ready()) {
-            //check for list or params
-            if (input.readText().substring(0, 3) == "list") {
-                //set list as list of other clients
-                TODO()
+    override fun run() {
+        val input = DataInputStream(socket.getInputStream())
+        while (!socket.isClosed) {
+            var message = input.readUTF()
+            if (message.contains("close")) {
+                socket.close()
             }
-            if (input.readText().substring(0, 5) == "params") {
-                //set params to curr and client with number that goes first in str
-                TODO()
+            if (message.contains("param")) {
+                val probability = message.substring(message.indexOf("\n") + 1).toInt()
+                println(probability)
+                if (message.contains("IP")) {
+                    Platform.runLater {
+                        Habitat.instance.controller.changeComboBoxLeft(probability)
+                    }
+                } else {
+                    Platform.runLater {
+                        Habitat.instance.controller.changeComboBoxRight(probability)
+                    }
+                }
+            } else {
+                message = message.replace("[\\[\\]]".toRegex(), "")
+                Platform.runLater {
+                    Habitat.instance.controller.addListView(message)
+                }
             }
         }
+        input.close()
     }
-}
 
-fun main() {
-    val exec: ExecutorService = Executors.newFixedThreadPool(10)
-    exec.execute(Client())
+    fun close() {
+        val out = DataOutputStream(socket.getOutputStream())
+        out.writeUTF("quit")
+    }
+
+    fun change(message: String) {
+        val out = DataOutputStream(socket.getOutputStream())
+        out.writeUTF(message)
+    }
 }

@@ -1,12 +1,19 @@
 package com.company.persons
 
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import javafx.fxml.FXML
+import javafx.fxml.Initializable
 import javafx.scene.control.*
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.text.Font
 import java.lang.NumberFormatException
+import java.net.URL
+import java.util.*
+import kotlin.collections.HashMap
 
 
 class Controller {
@@ -18,6 +25,11 @@ class Controller {
     private var threadIPFlag = true
 
     private var threadJPFlag = true
+
+    private var partnerNumber: Int = 0
+
+    @FXML
+    private lateinit var listView: ListView<String>
 
     @FXML
     lateinit var showInfo: CheckBox
@@ -143,12 +155,25 @@ class Controller {
         Habitat.instance.setPriorityJP(str)
     }
 
+    fun changeComboBoxLeft(probability: Int) {
+        comboBoxLeft.value = "${probability.toString()}%"
+        Habitat.instance.chanceOfSpawnIP = probability
+    }
+
+    fun changeComboBoxRight(probability: Int) {
+        comboBoxRight.value = "${probability.toString()}%"
+        Habitat.instance.chanceOfSpawnJP = probability
+    }
 
     fun selectComboBoxLeft() {
         val str = comboBoxLeft.value
         val index = str.indexOf("%")
         val value = str.substring(0 until index)
         Habitat.instance.chanceOfSpawnIP = value.toInt()
+        if (partnerNumber != 0) {
+            val message = "paramIP\n$partnerNumber\n$value"
+            Habitat.instance.synchronizedChange(message)
+        }
     }
 
     fun selectComboBoxRight() {
@@ -156,6 +181,10 @@ class Controller {
         val index = str.indexOf("%")
         val value = str.substring(0 until index)
         Habitat.instance.chanceOfSpawnJP = value.toInt()
+        if (partnerNumber != 0) {
+            val message = "paramJP\n$partnerNumber\n$value"
+            Habitat.instance.synchronizedChange(message)
+        }
     }
 
     fun addComboBoxes() {
@@ -191,6 +220,24 @@ class Controller {
 
             comboBoxFlag = true
         }
+    }
+
+    fun addListView(str: String) {
+        val list: MutableList<String> = str.split(",").toMutableList()
+        for (i in 0 until list.size) {
+            list[i] = "${list[i]} Client".trim()
+        }
+        val listOfClients = FXCollections.observableArrayList(list)
+        listView.items = listOfClients
+
+        listView.selectionModel.selectedItemProperty().addListener(object: ChangeListener<String> {
+            override fun changed(p0: ObservableValue<out String>?, p1: String?, p2: String?) {
+                val tempString = listView.selectionModel.selectedItem ?: ""
+                val index = tempString.indexOf(" ")
+                if (index >= 0)
+                    partnerNumber = tempString.substring(0, index).toInt()
+            }
+        })
     }
 
     fun startClick() {

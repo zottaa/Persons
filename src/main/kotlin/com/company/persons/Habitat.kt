@@ -9,14 +9,16 @@ import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.Pane
 import javafx.stage.Stage
+import java.io.DataOutputStream
 import java.util.*
 import kotlin.random.Random
 import kotlin.system.exitProcess
 
 
-class Habitat() : Application() {
+class Habitat : Application() {
     private var timer: Timer = Timer()
     private var simulationTime: Long = 0
+    private var socket: Client = Client()
     private lateinit var pane: Pane
     private lateinit var scene: Scene
     private lateinit var threadJP: JuridicalPersonThread
@@ -72,6 +74,7 @@ class Habitat() : Application() {
             title = "Persons"
             icons.add(Image("icon.png"))
             setOnCloseRequest {
+                socket.close()
                 Platform.exit()
                 exitProcess(0)
             }
@@ -80,6 +83,7 @@ class Habitat() : Application() {
         window = stage
         controller.addComboBoxes()
         controller.addTextFields()
+        Thread(socket).start()
     }
 
     fun time(): Long {
@@ -251,9 +255,12 @@ class Habitat() : Application() {
         pane.children.add(juridicalPerson.getImageView())
         Collections.addIntoCollections(juridicalPerson)
     }
+
+    fun synchronizedChange(message: String) {
+        socket.change(message)
+    }
 }
 
 fun main(args: Array<String>) {
-    val habitat = Habitat()
-    Application.launch(habitat::class.java, *args)
+    Application.launch(Habitat::class.java, *args)
 }
