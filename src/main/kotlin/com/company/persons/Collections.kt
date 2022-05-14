@@ -10,9 +10,9 @@ object Collections {
     var hashMapOfPersons = HashMap<Int, Person>()
 
     fun removeFromCollections(obj: Person) {
-        vectorOfPersons.remove(obj)
-        treeSetOfHashCodes.remove(obj.hashCode())
-        hashMapOfPersons.remove(obj.hashCode())
+            vectorOfPersons.remove(obj)
+            treeSetOfHashCodes.remove(obj.hashCode())
+            hashMapOfPersons.remove(obj.hashCode())
     }
 
     fun addIntoCollections(obj: Person) {
